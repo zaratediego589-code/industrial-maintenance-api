@@ -4,6 +4,9 @@ import com.diego.maintenance.model.Maquina;
 import com.diego.maintenance.repository.MaquinaRepository;
 import org.springframework.stereotype.Service;
 import com.diego.maintenance.exception.ResourceNotFoundException;
+import com.diego.maintenance.dto.MaquinaRequestDTO;
+import com.diego.maintenance.dto.MaquinaResponseDTO;
+import com.diego.maintenance.mapper.MaquinaMapper;
 
 import java.util.List;
 
@@ -11,27 +14,44 @@ import java.util.List;
 public class MaquinaService {
 
     private final MaquinaRepository maquinaRepository;
+    private final MaquinaMapper maquinaMapper;
 
-    public MaquinaService(MaquinaRepository maquinaRepository) {
+    public MaquinaService(
+            MaquinaRepository maquinaRepository,
+            MaquinaMapper maquinaMapper) {
+
         this.maquinaRepository = maquinaRepository;
+        this.maquinaMapper = maquinaMapper;
     }
 
-    public List<Maquina> obtenerTodas() {
-        return maquinaRepository.findAll();
+    public List<MaquinaResponseDTO> obtenerTodas() {
+
+        return maquinaRepository.findAll()
+                .stream()
+                .map(maquinaMapper::toResponseDTO)
+                .toList();
     }
 
-    public Maquina guardar(Maquina maquina) {
-        return maquinaRepository.save(maquina);
+    public MaquinaResponseDTO guardar(
+            MaquinaRequestDTO dto) {
+
+        Maquina maquina = maquinaMapper.toEntity(dto);
+
+        Maquina guardada = maquinaRepository.save(maquina);
+
+        return maquinaMapper.toResponseDTO(guardada);
     }
 
-    public Maquina obtenerPorId(Long id) {
+    public MaquinaResponseDTO obtenerPorId(Long id) {
 
-        return maquinaRepository.findById(id)
+        Maquina maquina = maquinaRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Máquina no encontrada con id: " + id
                         )
                 );
+
+        return maquinaMapper.toResponseDTO(maquina);
     }
 
     public void eliminar(Long id) {
@@ -46,19 +66,21 @@ public class MaquinaService {
         maquinaRepository.delete(maquina);
     }
 
-    public Maquina actualizar(Long id, Maquina datosActualizados) {
+    public MaquinaResponseDTO actualizar(
+            Long id,
+            MaquinaRequestDTO dto) {
 
-        Maquina maquinaExistente = maquinaRepository.findById(id)
+        Maquina maquina = maquinaRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Máquina no encontrada con id: " + id
                         )
                 );
 
-        maquinaExistente.setNombre(datosActualizados.getNombre());
-        maquinaExistente.setTipo(datosActualizados.getTipo());
-        maquinaExistente.setEstado(datosActualizados.getEstado());
+        maquinaMapper.actualizarEntidad(maquina, dto);
 
-        return maquinaRepository.save(maquinaExistente);
+        Maquina actualizada = maquinaRepository.save(maquina);
+
+        return maquinaMapper.toResponseDTO(actualizada);
     }
 }
