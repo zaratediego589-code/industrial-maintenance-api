@@ -2,6 +2,8 @@ package com.diego.maintenance.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.diego.maintenance.enums.EstadoMaquina;
+import jakarta.validation.constraints.NotNull;
 
 public class MaquinaRequestDTO {
 
@@ -13,8 +15,8 @@ public class MaquinaRequestDTO {
     @NotBlank(message = "El tipo de máquina es obligatorio")
     private String tipo;
 
-    @NotBlank(message = "El estado de la máquina es obligatorio")
-    private String estado;
+    @NotNull(message = "El estado de la máquina es obligatorio")
+    private EstadoMaquina estado;
 
     public String getNombre() {
         return nombre;
@@ -32,11 +34,11 @@ public class MaquinaRequestDTO {
         this.tipo = tipo;
     }
 
-    public String getEstado() {
+    public EstadoMaquina getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoMaquina estado) {
         this.estado = estado;
     }
 }

@@ -3,6 +3,7 @@ package com.diego.maintenance.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.diego.maintenance.enums.EstadoMaquina;
 
 @Entity
 @Table(name = "maquinas")
@@ -19,8 +20,8 @@ public class Maquina {
     @NotBlank(message = "El tipo de máquina es obligatorio")
     private String tipo;
 
-    @NotBlank(message = "El estado de la máquina es obligatorio")
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private EstadoMaquina estado;
 
     public Long getId() {
         return id;
@@ -46,11 +47,11 @@ public class Maquina {
         this.tipo = tipo;
     }
 
-    public String getEstado() {
+    public EstadoMaquina getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoMaquina estado) {
         this.estado = estado;
     }
 }

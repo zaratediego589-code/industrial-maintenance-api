@@ -1,17 +1,19 @@
 package com.diego.maintenance.dto;
 
+import com.diego.maintenance.enums.EstadoMaquina;
+
 public class MaquinaResponseDTO {
 
     private Long id;
     private String nombre;
     private String tipo;
-    private String estado;
+    private EstadoMaquina estado;
 
     public MaquinaResponseDTO(
             Long id,
             String nombre,
             String tipo,
-            String estado) {
+            EstadoMaquina estado) {
 
         this.id = id;
         this.nombre = nombre;
@@ -31,7 +33,7 @@ public class MaquinaResponseDTO {
         return tipo;
     }
 
-    public String getEstado() {
+    public EstadoMaquina getEstado() {
         return estado;
     }
 }
