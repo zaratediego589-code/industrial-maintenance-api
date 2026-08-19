@@ -7,6 +7,7 @@ import com.diego.maintenance.exception.ResourceNotFoundException;
 import com.diego.maintenance.dto.MaquinaRequestDTO;
 import com.diego.maintenance.dto.MaquinaResponseDTO;
 import com.diego.maintenance.mapper.MaquinaMapper;
+import com.diego.maintenance.enums.EstadoMaquina;
 
 import java.util.List;
 
@@ -82,5 +83,13 @@ public class MaquinaService {
         Maquina actualizada = maquinaRepository.save(maquina);
 
         return maquinaMapper.toResponseDTO(actualizada);
+    }
+
+    public List<MaquinaResponseDTO> obtenerPorEstado(EstadoMaquina estado) {
+
+        return maquinaRepository.findByEstado(estado)
+                .stream()
+                .map(maquinaMapper::toResponseDTO)
+                .toList();
     }
 }

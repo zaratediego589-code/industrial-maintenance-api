@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.diego.maintenance.enums.EstadoOrden;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -34,7 +38,22 @@ public class OrdenMantenimientoController {
 
     // GET - Obtener todas las órdenes
     @GetMapping
-    public List<OrdenMantenimientoResponseDTO> obtenerTodas() {
+    public List<OrdenMantenimientoResponseDTO> obtenerTodas(
+            @RequestParam(required = false) EstadoOrden estado,
+            @RequestParam(required = false) Long tecnicoId,
+            @RequestParam(required = false) Long maquinaId) {
+
+        if (estado != null) {
+            return ordenService.obtenerPorEstado(estado);
+        }
+
+        if (tecnicoId != null) {
+            return ordenService.obtenerPorTecnico(tecnicoId);
+        }
+
+        if (maquinaId != null) {
+            return ordenService.obtenerPorMaquina(maquinaId);
+        }
 
         return ordenService.obtenerTodas();
     }
@@ -81,5 +100,12 @@ public class OrdenMantenimientoController {
         ordenService.eliminar(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/paginadas")
+    public Page<OrdenMantenimientoResponseDTO> obtenerPaginadas(
+            Pageable pageable) {
+
+        return ordenService.obtenerPaginadas(pageable);
     }
 }

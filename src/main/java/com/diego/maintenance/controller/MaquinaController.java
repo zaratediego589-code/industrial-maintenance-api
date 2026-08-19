@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.diego.maintenance.enums.EstadoMaquina;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -34,7 +36,13 @@ public class MaquinaController {
     // GET - Obtener todas las máquinas
     // GET http://localhost:8080/api/maquinas
     @GetMapping
-    public List<MaquinaResponseDTO> obtenerTodas() {
+    public List<MaquinaResponseDTO> obtenerTodas(
+            @RequestParam(required = false) EstadoMaquina estado) {
+
+        if (estado != null) {
+            return maquinaService.obtenerPorEstado(estado);
+        }
+
         return maquinaService.obtenerTodas();
     }
 

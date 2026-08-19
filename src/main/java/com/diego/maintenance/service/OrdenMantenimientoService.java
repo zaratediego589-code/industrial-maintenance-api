@@ -11,6 +11,9 @@ import com.diego.maintenance.repository.MaquinaRepository;
 import com.diego.maintenance.repository.OrdenMantenimientoRepository;
 import com.diego.maintenance.repository.TecnicoRepository;
 import org.springframework.stereotype.Service;
+import com.diego.maintenance.enums.EstadoOrden;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -133,4 +136,39 @@ public class OrdenMantenimientoService {
 
         ordenRepository.delete(orden);
     }
+
+    public List<OrdenMantenimientoResponseDTO> obtenerPorEstado(
+            EstadoOrden estado) {
+
+        return ordenRepository.findByEstado(estado)
+                .stream()
+                .map(ordenMapper::toResponseDTO)
+                .toList();
+    }
+
+    public List<OrdenMantenimientoResponseDTO> obtenerPorTecnico(
+            Long tecnicoId) {
+
+        return ordenRepository.findByTecnicoId(tecnicoId)
+                .stream()
+                .map(ordenMapper::toResponseDTO)
+                .toList();
+    }
+
+    public List<OrdenMantenimientoResponseDTO> obtenerPorMaquina(
+            Long maquinaId) {
+
+        return ordenRepository.findByMaquinaId(maquinaId)
+                .stream()
+                .map(ordenMapper::toResponseDTO)
+                .toList();
+    }
+
+    public Page<OrdenMantenimientoResponseDTO> obtenerPaginadas(
+            Pageable pageable) {
+
+        return ordenRepository.findAll(pageable)
+                .map(ordenMapper::toResponseDTO);
+    }
+
 }
